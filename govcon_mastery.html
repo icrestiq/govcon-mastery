@@ -41,6 +41,16 @@
     position: sticky; top: 0; height: 100vh; overflow-y: auto;
     display: flex; flex-direction: column;
   }
+  .sb-back-links {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 10px 20px; background: var(--navy);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .sb-back-links a {
+    font-size: 11px; font-weight: 600; color: var(--gold);
+    text-decoration: none; opacity: .85;
+  }
+  .sb-back-links a:hover { opacity: 1; text-decoration: underline; }
   .sb-brand {
     padding: 20px 20px 14px;
     border-bottom: 1px solid var(--border);
@@ -273,6 +283,10 @@
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <aside class="sidebar">
+  <div class="sb-back-links">
+    <a href="https://www.govconlab.com" target="_top">← govconlab.com</a>
+    <a href="index.html">All lessons</a>
+  </div>
   <div class="sb-brand">
     <div class="sb-logo">iCrestiQ · GovCon Lab</div>
     <div class="sb-title">GovCon Mastery</div>
@@ -1326,6 +1340,14 @@
   function toggleCheck(el) {
     el.classList.toggle('done');
   }
+
+  (function initFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get('lesson');
+    if (target && document.getElementById('lesson-' + target)) {
+      showLesson(target);
+    }
+  })();
 
   function updateProgress() {
     const pct = Math.round((done.size / TOTAL) * 100);
