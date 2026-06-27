@@ -1,1 +1,1344 @@
-placeholder
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GovCon Mastery — iCrestiQ GovCon Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  /* ── Reset & Base ─────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #0f0f13; color: #e2e0d8; display: flex; min-height: 100vh; }
+
+  /* ── Palette ──────────────────────────────────────────── */
+  :root {
+    --navy:   #0D1B2A;
+    --gold:   #C9A84C;
+    --gold-lt:#f0c96e;
+    --teal:   #0F6E56;
+    --red:    #C0392B;
+    --orange: #D35400;
+    --bg:     #0f0f13;
+    --bg2:    #17171f;
+    --bg3:    #1e1e2a;
+    --border: #2a2a38;
+    --text:   #e2e0d8;
+    --muted:  #888;
+    --ph1:    #6c5ce7;   /* purple  */
+    --ph2:    #00b894;   /* teal    */
+    --ph3:    #0984e3;   /* blue    */
+    --ph4:    #e17055;   /* orange  */
+    --ph5:    #C9A84C;   /* gold    */
+  }
+
+  /* ── Sidebar ──────────────────────────────────────────── */
+  .sidebar {
+    width: 280px; min-width: 280px; background: var(--bg2);
+    border-right: 1px solid var(--border); padding: 0;
+    position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sb-brand {
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--navy);
+  }
+  .sb-logo { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; }
+  .sb-title { font-size: 15px; font-weight: 800; color: #fff; margin-top: 3px; line-height: 1.3; }
+  .sb-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .sb-progress { padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  .sb-prog-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .sb-prog-bar { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .sb-prog-fill { height: 100%; background: var(--gold); border-radius: 4px; transition: width .4s; }
+  .phase-group { padding: 10px 0 4px; }
+  .phase-label {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 20px; font-size: 10px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  }
+  .phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .ph-color-1 { background: var(--ph1); }
+  .ph-color-2 { background: var(--ph2); }
+  .ph-color-3 { background: var(--ph3); }
+  .ph-color-4 { background: var(--ph4); }
+  .ph-color-5 { background: var(--ph5); }
+  .ph-text-1 { color: var(--ph1); }
+  .ph-text-2 { color: var(--ph2); }
+  .ph-text-3 { color: var(--ph3); }
+  .ph-text-4 { color: var(--ph4); }
+  .ph-text-5 { color: var(--ph5); }
+  .lesson-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 20px 8px 28px; font-size: 13px; color: var(--muted);
+    cursor: pointer; transition: all .15s; border-left: 3px solid transparent;
+    position: relative;
+  }
+  .lesson-link:hover { background: var(--bg3); color: var(--text); }
+  .lesson-link.active { background: var(--bg3); color: var(--text); }
+  .ph1.active { border-left-color: var(--ph1); }
+  .ph2.active { border-left-color: var(--ph2); }
+  .ph3.active { border-left-color: var(--ph3); }
+  .ph4.active { border-left-color: var(--ph4); }
+  .ph5.active { border-left-color: var(--ph5); }
+  .lesson-num { font-size: 10px; font-weight: 700; color: var(--border); min-width: 22px; }
+  .lesson-link.active .lesson-num { color: var(--gold); }
+  .lesson-check {
+    margin-left: auto; width: 16px; height: 16px; border-radius: 50%;
+    border: 1.5px solid var(--border); flex-shrink: 0; transition: all .2s;
+    display: flex; align-items: center; justify-content: center; font-size: 9px;
+  }
+  .lesson-link.done .lesson-check { background: var(--teal); border-color: var(--teal); color: #fff; }
+  .lesson-link.done .lesson-check::after { content: "✓"; }
+
+  /* ── Main ─────────────────────────────────────────────── */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+  /* Course header */
+  .course-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a2d45 100%);
+    padding: 36px 48px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ch-eyebrow { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+  .ch-title { font-size: 32px; font-weight: 800; color: #fff; line-height: 1.1; }
+  .ch-sub { font-size: 14px; color: #a0b0c0; margin-top: 10px; max-width: 640px; line-height: 1.6; }
+  .ch-callout { font-size: 13px; color: var(--gold); margin-top: 14px; font-style: italic; }
+  .ch-meta { display: flex; gap: 20px; margin-top: 18px; }
+  .ch-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.3);
+    color: var(--gold); font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .08em;
+  }
+  .free-badge {
+    background: rgba(15,110,86,.15); border: 1px solid rgba(15,110,86,.35); color: #1d9e75;
+  }
+
+  /* Lesson panels */
+  .lesson { display: none; padding: 40px 48px; max-width: 860px; }
+  .lesson.active { display: block; }
+
+  .lesson-header { margin-bottom: 28px; }
+  .lh-phase { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+  .lh-title { font-size: 24px; font-weight: 800; color: #fff; line-height: 1.2; }
+  .lh-sub { font-size: 14px; color: var(--muted); margin-top: 8px; font-style: italic; }
+
+  /* Lesson graphic */
+  .lesson-graphic {
+    width: 100%; border-radius: 12px; overflow: hidden;
+    margin-bottom: 28px; border: 1px solid var(--border);
+  }
+  .lesson-graphic img { width: 100%; display: block; }
+
+  /* Body text */
+  .lesson-body { font-size: 15px; line-height: 1.75; color: #c8c6be; }
+  .lesson-body h3 { font-size: 17px; font-weight: 700; color: #fff; margin: 28px 0 10px; }
+  .lesson-body p { margin-bottom: 16px; }
+  .lesson-body ul { padding-left: 20px; margin-bottom: 16px; }
+  .lesson-body li { margin-bottom: 8px; }
+  .lesson-body strong { color: var(--text); }
+
+  /* Callout box */
+  .callout {
+    background: rgba(201,168,76,.07); border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 20px 0;
+    font-size: 14px; color: #c8c6be; line-height: 1.6;
+  }
+  .callout strong { color: var(--gold); }
+
+  /* Checklist */
+  .checklist { margin: 24px 0; }
+  .checklist-title { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+  .check-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 14px; border-radius: 8px; cursor: pointer;
+    transition: background .15s; border: 1px solid transparent; margin-bottom: 6px;
+  }
+  .check-item:hover { background: var(--bg3); }
+  .check-item.done { background: rgba(15,110,86,.08); border-color: rgba(15,110,86,.2); }
+  .check-item i { font-size: 18px; color: var(--border); margin-top: 1px; flex-shrink: 0; transition: color .2s; }
+  .check-item.done i { color: var(--teal); }
+  .check-item span { font-size: 14px; color: #c8c6be; line-height: 1.5; }
+  .check-item.done span { color: var(--muted); text-decoration: line-through; }
+
+  /* Platform cards */
+  .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .platform-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .pc-name { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .pc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .pc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .pc-tag {
+    font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 10px;
+    background: rgba(201,168,76,.1); color: var(--gold); border: 1px solid rgba(201,168,76,.2);
+  }
+
+  /* Verdict display */
+  .verdict-row { display: flex; gap: 10px; margin: 16px 0; }
+  .verdict {
+    flex: 1; padding: 12px; border-radius: 8px; text-align: center;
+    font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .v-go { background: rgba(15,110,86,.15); border: 1px solid rgba(15,110,86,.3); color: #1d9e75; }
+  .v-cau { background: rgba(211,84,0,.12); border: 1px solid rgba(211,84,0,.3); color: #e17055; }
+  .v-no { background: rgba(192,57,43,.12); border: 1px solid rgba(192,57,43,.3); color: #e74c3c; }
+
+  /* Phase complete card */
+  .phase-complete {
+    background: linear-gradient(135deg, rgba(13,27,42,.9), rgba(26,45,69,.9));
+    border: 1px solid rgba(201,168,76,.25); border-radius: 12px;
+    padding: 24px 28px; margin: 32px 0;
+  }
+  .pc-label { font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 6px; }
+  .pc-title { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+  .pc-desc { font-size: 14px; color: #a0b0c0; line-height: 1.6; margin-bottom: 16px; }
+  .pc-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold); color: var(--navy); font-size: 13px; font-weight: 700;
+    padding: 10px 20px; border-radius: 8px; text-decoration: none;
+    cursor: pointer; border: none; transition: opacity .15s;
+  }
+  .pc-btn:hover { opacity: .85; }
+
+  /* Upsell banner */
+  .upsell-banner {
+    background: linear-gradient(135deg, var(--navy), #112233);
+    border: 1px solid rgba(201,168,76,.2); border-radius: 12px;
+    padding: 24px 28px; margin: 32px 0;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .ub-icon { font-size: 32px; flex-shrink: 0; }
+  .ub-label { font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+  .ub-title { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+  .ub-desc { font-size: 13px; color: #a0b0c0; line-height: 1.6; margin-bottom: 14px; }
+  .ub-courses { display: flex; flex-wrap: wrap; gap: 8px; }
+  .course-pill {
+    font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px;
+    background: rgba(201,168,76,.1); color: var(--gold); border: 1px solid rgba(201,168,76,.25);
+  }
+  .course-pill.green { background: rgba(15,110,86,.12); color: #1d9e75; border-color: rgba(15,110,86,.3); }
+  .course-pill.amber { background: rgba(211,84,0,.1); color: #e17055; border-color: rgba(211,84,0,.25); }
+  .course-pill.blue { background: rgba(9,132,227,.1); color: #74b9ff; border-color: rgba(9,132,227,.25); }
+  .course-pill.pink { background: rgba(232,67,147,.1); color: #fd79a8; border-color: rgba(232,67,147,.25); }
+
+  /* CTA section */
+  .cta-sec {
+    background: var(--navy); border-top: 1px solid var(--border);
+    padding: 40px 48px; text-align: center;
+  }
+  .cta-sec h2 { font-size: 20px; font-weight: 700; color: #fff; max-width: 580px; margin: 0 auto 12px; line-height: 1.4; }
+  .cta-tagline { font-size: 15px; color: var(--gold); font-style: italic; margin-bottom: 20px; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gold); color: var(--navy); font-size: 14px; font-weight: 800;
+    padding: 12px 28px; border-radius: 8px; cursor: pointer; border: none; transition: opacity .15s;
+  }
+  .cta-btn:hover { opacity: .85; }
+
+  /* Lesson footer nav */
+  .lesson-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0; border-top: 1px solid var(--border);
+    margin-top: 32px;
+  }
+  .lf-label { font-size: 12px; color: var(--muted); }
+  .lf-nav { display: flex; gap: 10px; }
+  .lf-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text); font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all .15s;
+  }
+  .lf-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .lf-btn.primary { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    body { flex-direction: column; }
+    .sidebar { width: 100%; min-width: unset; height: auto; position: static; }
+    .lesson { padding: 24px 20px; }
+    .course-header { padding: 24px 20px; }
+    .platform-grid { grid-template-columns: 1fr; }
+    .cta-sec { padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">iCrestiQ · GovCon Lab</div>
+    <div class="sb-title">GovCon Mastery</div>
+    <div class="sb-sub">Free Foundation Course</div>
+  </div>
+  <div class="sb-progress">
+    <div class="sb-prog-label"><span>Your Progress</span><span id="prog-pct">0%</span></div>
+    <div class="sb-prog-bar"><div class="sb-prog-fill" id="prog-fill" style="width:0%"></div></div>
+  </div>
+
+  <!-- Phase 1 -->
+  <div class="phase-group">
+    <div class="phase-label"><span class="phase-dot ph-color-1"></span><span class="ph-text-1">Phase 1 — Foundation</span></div>
+    <div class="lesson-link ph1 active" id="nav-1-1" onclick="showLesson('1-1')"><span class="lesson-num">1.1</span>Choosing a business name<span class="lesson-check" id="chk-1-1"></span></div>
+    <div class="lesson-link ph1" id="nav-1-2" onclick="showLesson('1-2')"><span class="lesson-num">1.2</span>Business structure (LLC vs sole prop)<span class="lesson-check" id="chk-1-2"></span></div>
+    <div class="lesson-link ph1" id="nav-1-3" onclick="showLesson('1-3')"><span class="lesson-num">1.3</span>Opening a business bank account<span class="lesson-check" id="chk-1-3"></span></div>
+    <div class="lesson-link ph1" id="nav-1-4" onclick="showLesson('1-4')"><span class="lesson-num">1.4</span>Getting your EIN<span class="lesson-check" id="chk-1-4"></span></div>
+    <div class="lesson-link ph1" id="nav-1-5" onclick="showLesson('1-5')"><span class="lesson-num">1.5</span>State business license<span class="lesson-check" id="chk-1-5"></span></div>
+    <div class="lesson-link ph1" id="nav-1-6" onclick="showLesson('1-6')"><span class="lesson-num">1.6</span>Business credit fundamentals<span class="lesson-check" id="chk-1-6"></span></div>
+    <div class="lesson-link ph1" id="nav-1-7" onclick="showLesson('1-7')"><span class="lesson-num">1.7</span>Setting up your workspace<span class="lesson-check" id="chk-1-7"></span></div>
+  </div>
+
+  <!-- Phase 2 -->
+  <div class="phase-group">
+    <div class="phase-label"><span class="phase-dot ph-color-2"></span><span class="ph-text-2">Phase 2 — SAM.gov</span></div>
+    <div class="lesson-link ph2" id="nav-2-1" onclick="showLesson('2-1')"><span class="lesson-num">2.1</span>What is SAM.gov?<span class="lesson-check" id="chk-2-1"></span></div>
+    <div class="lesson-link ph2" id="nav-2-2" onclick="showLesson('2-2')"><span class="lesson-num">2.2</span>Getting your UEI number<span class="lesson-check" id="chk-2-2"></span></div>
+    <div class="lesson-link ph2" id="nav-2-3" onclick="showLesson('2-3')"><span class="lesson-num">2.3</span>CAGE code explained<span class="lesson-check" id="chk-2-3"></span></div>
+    <div class="lesson-link ph2" id="nav-2-4" onclick="showLesson('2-4')"><span class="lesson-num">2.4</span>Completing your SAM.gov profile<span class="lesson-check" id="chk-2-4"></span></div>
+    <div class="lesson-link ph2" id="nav-2-5" onclick="showLesson('2-5')"><span class="lesson-num">2.5</span>SAM.gov maintenance & compliance<span class="lesson-check" id="chk-2-5"></span></div>
+  </div>
+
+  <!-- Phase 3 -->
+  <div class="phase-group">
+    <div class="phase-label"><span class="phase-dot ph-color-3"></span><span class="ph-text-3">Phase 3 — Your Niche</span></div>
+    <div class="lesson-link ph3" id="nav-3-1" onclick="showLesson('3-1')"><span class="lesson-num">3.1</span>Choosing your niche<span class="lesson-check" id="chk-3-1"></span></div>
+    <div class="lesson-link ph3" id="nav-3-2" onclick="showLesson('3-2')"><span class="lesson-num">3.2</span>Understanding NSN & FSC codes<span class="lesson-check" id="chk-3-2"></span></div>
+    <div class="lesson-link ph3" id="nav-3-3" onclick="showLesson('3-3')"><span class="lesson-num">3.3</span>Set-aside certifications<span class="lesson-check" id="chk-3-3"></span></div>
+  </div>
+
+  <!-- Phase 4 -->
+  <div class="phase-group">
+    <div class="phase-label"><span class="phase-dot ph-color-4"></span><span class="ph-text-4">Phase 4 — Bid and Win</span></div>
+    <div class="lesson-link ph4" id="nav-4-1" onclick="showLesson('4-1')"><span class="lesson-num">4.1</span>Finding RFQs<span class="lesson-check" id="chk-4-1"></span></div>
+    <div class="lesson-link ph4" id="nav-4-2" onclick="showLesson('4-2')"><span class="lesson-num">4.2</span>Bid / no-bid analysis<span class="lesson-check" id="chk-4-2"></span></div>
+    <div class="lesson-link ph4" id="nav-4-3" onclick="showLesson('4-3')"><span class="lesson-num">4.3</span>Supplier sourcing and vetting<span class="lesson-check" id="chk-4-3"></span></div>
+    <div class="lesson-link ph4" id="nav-4-4" onclick="showLesson('4-4')"><span class="lesson-num">4.4</span>Submitting quotes<span class="lesson-check" id="chk-4-4"></span></div>
+  </div>
+
+  <!-- Phase 5 -->
+  <div class="phase-group">
+    <div class="phase-label"><span class="phase-dot ph-color-5"></span><span class="ph-text-5">Phase 5 — Scale</span></div>
+    <div class="lesson-link ph5" id="nav-5-1" onclick="showLesson('5-1')"><span class="lesson-num">5.1</span>HubSpot RFQ pipeline<span class="lesson-check" id="chk-5-1"></span></div>
+    <div class="lesson-link ph5" id="nav-5-2" onclick="showLesson('5-2')"><span class="lesson-num">5.2</span>Automating with Make.com<span class="lesson-check" id="chk-5-2"></span></div>
+    <div class="lesson-link ph5" id="nav-5-3" onclick="showLesson('5-3')"><span class="lesson-num">5.3</span>Tracking performance<span class="lesson-check" id="chk-5-3"></span></div>
+    <div class="lesson-link ph5" id="nav-5-4" onclick="showLesson('5-4')"><span class="lesson-num">5.4</span>Growing your revenue<span class="lesson-check" id="chk-5-4"></span></div>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div class="main">
+  <div class="course-header">
+    <div class="ch-eyebrow">iCrestiQ · GovCon Lab · Free Course</div>
+    <div class="ch-title">GovCon Mastery</div>
+    <div class="ch-sub">A complete roadmap from zero to operating government contractor — legal foundation, SAM.gov registration, niche selection, bidding, and automation systems that scale without a full team.</div>
+    <div class="ch-callout">"The government is always purchasing — it might as well be from you."</div>
+    <div class="ch-meta">
+      <span class="ch-badge free-badge"><i class="ti ti-gift"></i> Free Course</span>
+      <span class="ch-badge"><i class="ti ti-book"></i> 23 Lessons</span>
+      <span class="ch-badge"><i class="ti ti-layers"></i> 5 Phases</span>
+    </div>
+  </div>
+
+  <!-- ════ PHASE 1 LESSONS ════ -->
+
+  <div class="lesson active" id="lesson-1-1">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.1 — Choosing a Business Name</div>
+      <div class="lh-sub">"Your name is your first impression in the procurement system."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/7rxxA/DAHNtc7rxxA/-1/0/0001-601738225636146890.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T075203Z&X-Amz-Expires=72482&X-Amz-Signature=cc66659b493d056896ab97cd6e724c090dee6f838cb5199cf308e6e260ca99c0&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A00%3A05%20GMT" alt="Lesson 1.1 — Choosing a Business Name" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Your business name is more than a brand — in government contracting, it's the identifier that appears on every SAM.gov registration, every solicitation response, and every contract award. Getting it right from the start saves hours of paperwork headaches later.</p>
+      <h3>What Makes a Good GovCon Business Name?</h3>
+      <p>Government procurement officers review hundreds of vendor profiles. A name that is clear, professional, and easy to spell helps you appear credible. Avoid generic names like "Supply Solutions LLC" that blend into the crowd. Aim for something specific to your niche or region.</p>
+      <ul>
+        <li>Keep it short — under 4 words is ideal for system fields</li>
+        <li>Avoid special characters that break database entries</li>
+        <li>Make sure the name is available as a domain and on SAM.gov</li>
+        <li>Consider including a keyword relevant to your supply category</li>
+      </ul>
+      <h3>Check These Before You File</h3>
+      <p>Before registering your LLC, verify your name is available in your state's business entity search, check the USPTO trademark database for conflicts, and confirm a matching .com domain is available. You'll want your name, domain, and SAM.gov entity to match exactly.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Search SAM.gov before you file your LLC — sometimes a name that's available in your state is already in use by a federal vendor, which creates confusion during searches.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Brainstorm 3–5 name options</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Search your state's business entity database</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Search SAM.gov for name conflicts</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Confirm .com domain is available</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Select your business name</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 1 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn primary" onclick="showLesson('1-2')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-2">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.2 — Business Structure (LLC vs Sole Proprietor)</div>
+      <div class="lh-sub">"The right structure protects your assets and opens procurement doors."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/vJdv8/DAHNtXvJdv8/-1/0/0001-5206668845423087480.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260627%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260627T023228Z&X-Amz-Expires=5557&X-Amz-Signature=a8cd3fbe5f94f77bc95427d096d825cb270111448a0429b45567c18316da68ce&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A05%3A05%20GMT" alt="Lesson 1.2 — Business Structure" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Choosing your business structure is one of the most important early decisions. For government contracting, the LLC (Limited Liability Company) is the preferred structure for most small operators — it provides liability protection, a professional appearance, and separates your personal finances from your business activity.</p>
+      <h3>LLC vs Sole Proprietorship</h3>
+      <ul>
+        <li><strong>Sole Prop:</strong> Easiest to start, no formal filing. But your personal assets are at risk, and many agencies prefer registered entities.</li>
+        <li><strong>LLC:</strong> Requires state filing and a small fee, but provides liability protection, a formal EIN, and a professional entity name on your SAM.gov profile.</li>
+      </ul>
+      <h3>Why LLC is the Right Move for GovCon</h3>
+      <p>SAM.gov requires an EIN for registration. As a sole proprietor you can use your Social Security Number, but this creates security and audit risks. An LLC gets its own EIN, keeps your SSN private, and signals to contracting officers that you're a serious vendor.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> File your LLC before you apply for your EIN and before you begin SAM.gov registration. The order matters — getting them out of sequence creates delays in the federal system.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Decide on LLC structure</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>File LLC with your state's Secretary of State</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Obtain Articles of Organization / Certificate of Formation</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Draft or obtain a basic Operating Agreement</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 2 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-1')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('1-3')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-3">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.3 — Opening a Business Bank Account</div>
+      <div class="lh-sub">"Separate finances from day one — it protects you and looks professional."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/rdgQs/DAHNtfrdgQs/-1/0/0001-4385887811659645893.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T071122Z&X-Amz-Expires=75539&X-Amz-Signature=a79df20f3ac47342a3e74e37c91bd731679eb9bc11b30a30fdf20ae95bee9c6c&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A10%3A21%20GMT" alt="Lesson 1.3 — Business Bank Account" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>A dedicated business bank account is non-negotiable for government contracting. Federal payments come via ACH direct deposit — and the banking information you enter into SAM.gov must match your bank account exactly. Any mismatch delays payment.</p>
+      <h3>What to Look for in a Business Account</h3>
+      <ul>
+        <li>No monthly fees or low minimum balance requirements</li>
+        <li>ACH and wire transfer capability</li>
+        <li>Online access and debit card for vendor payments</li>
+        <li>Ability to set up multiple users if you have a team</li>
+      </ul>
+      <h3>Critical: SAM.gov Banking Entry</h3>
+      <p>When you register on SAM.gov, you'll enter your bank routing and account number for payment. The legal name on your bank account must match your registered entity name exactly — down to "LLC" vs "L.L.C." Check this carefully before submitting.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Keep a screenshot of your SAM.gov banking entry and compare it against your bank statement header. Discrepancies are the #1 cause of payment holds on federal contracts.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research business checking account options</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Open business checking account with your LLC EIN</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Confirm account name matches LLC legal name exactly</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Save routing number and account number securely</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 3 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-2')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('1-4')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-4">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.4 — Getting Your EIN</div>
+      <div class="lh-sub">"Your EIN is the foundation of your federal identity."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/Je8PQ/DAHNtYJe8PQ/-1/0/0001-91705567303522819.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T174851Z&X-Amz-Expires=38789&X-Amz-Signature=ce6a4dabbfd8d2d401b609011d212b58ee9eefba2c12be09e8ec68e429095d83&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A35%3A20%20GMT" alt="Lesson 1.4 — Getting Your EIN" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>An Employer Identification Number (EIN) is issued by the IRS and serves as your business's federal tax identifier — like a Social Security Number for your company. It's required for SAM.gov registration, business banking, and all federal transactions.</p>
+      <h3>How to Apply</h3>
+      <p>Apply online at IRS.gov — the process is free, takes about 10 minutes, and your EIN is issued immediately. Only use the official IRS website. Third-party sites charge fees for a service that is completely free from the government.</p>
+      <ul>
+        <li>Go to IRS.gov/EIN</li>
+        <li>Select "Limited Liability Company" as your entity type</li>
+        <li>Complete the online application</li>
+        <li>Print and save your EIN confirmation letter (CP 575)</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Save your EIN confirmation letter as a PDF in a secure cloud folder. You'll need it for SAM.gov, bank account opening, and any state licensing requirements.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Apply for EIN at IRS.gov (free, takes 10 minutes)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Download and save EIN confirmation letter (CP 575)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Record your EIN in a secure password manager</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 4 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-3')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('1-5')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-5">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.5 — State Business License</div>
+      <div class="lh-sub">"Stay compliant at home before you do business with the federal government."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/H7abs/DAHNtYH7abs/-1/0/0001-9209243015232459767.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T113019Z&X-Amz-Expires=61399&X-Amz-Signature=4d18661c665c0d9fc2dc47c57b711a83a760c9a6804c05eb10c56435c45a295b&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A33%3A38%20GMT" alt="Lesson 1.5 — State Business License" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Beyond your LLC formation, most states and counties require a general business license to operate legally. Requirements vary by state, city, and business type. Failing to maintain a current business license can disqualify you from certain contracts and creates compliance risk.</p>
+      <h3>What You Typically Need</h3>
+      <ul>
+        <li>State general business license (varies by state)</li>
+        <li>County or city business license (varies by municipality)</li>
+        <li>Industry-specific permits if your niche requires them</li>
+      </ul>
+      <h3>Annual Renewal</h3>
+      <p>Most business licenses must be renewed annually. Add your renewal date to your compliance tracker and set a 60-day reminder. A lapsed license is one of the most common — and most avoidable — compliance failures.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> In South Carolina, check both the state SCBOS portal and your county's business license office. County requirements are separate from state registration.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research your state's business license requirements</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Apply for state business license</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Check county/city requirements in your municipality</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Log renewal date in your compliance tracker</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 5 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-4')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('1-6')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-6">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.6 — Business Credit Fundamentals</div>
+      <div class="lh-sub">"Credit is the leverage that lets you scale without draining your cash."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/6yTuQ/DAHNtZ6yTuQ/-1/0/0001-5219053744277008690.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T041840Z&X-Amz-Expires=85800&X-Amz-Signature=4d39527ebd4664c76189eb0ec890c649f4aa33909641fcdebd870a52f49ae383&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A08%3A40%20GMT" alt="Lesson 1.6 — Business Credit" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Government contracts pay on Net-30, Net-60, or sometimes Net-90 terms. That means you may need to purchase inventory and ship product weeks before you receive payment. Business credit is what bridges that gap — and building it early gives you options when you need them.</p>
+      <h3>Building Your Business Credit Profile</h3>
+      <ul>
+        <li>Register with Dun & Bradstreet (D-U-N-S number — free)</li>
+        <li>Open a business credit card with a low limit and pay it monthly</li>
+        <li>Open accounts with vendors that report to business credit bureaus</li>
+        <li>Keep utilization below 30% and pay on time — every time</li>
+      </ul>
+      <h3>Why This Matters for GovCon</h3>
+      <p>As you win larger contracts, you'll need to carry inventory. Business credit lines allow you to purchase product, fulfill the order, and pay the line back when the government pays you — without touching personal savings.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Apply for your D-U-N-S number immediately after forming your LLC. It takes 30 days to process, so start early. The D-U-N-S is separate from your SAM.gov UEI — you need both.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Register for a D-U-N-S number at Dnb.com</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Apply for a business credit card</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research vendor credit accounts (Uline, Quill, etc.)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up autopay on all business credit accounts</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 6 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-5')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('1-7')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-1-7">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-1">Phase 1 — Building the Foundation</div>
+      <div class="lh-title">Lesson 1.7 — Setting Up Your Workspace</div>
+      <div class="lh-sub">"Your workspace is your operations center — set it up to run efficiently."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/It_NU/DAHNtWIt_NU/-1/0/0001-8913131339944977599.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T171647Z&X-Amz-Expires=41123&X-Amz-Signature=d3488774641b4550b04a015c39c6b5f6c9eaa8bf390067a976da19777d348c9a&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A42%3A10%20GMT" alt="Lesson 1.7 — Setting Up Your Workspace" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Government contracting is an information-intensive business. You'll be managing RFQ pipelines, supplier communications, compliance deadlines, and bid documents simultaneously. Your workspace — digital and physical — needs to support that volume efficiently.</p>
+      <h3>Essential Digital Tools</h3>
+      <ul>
+        <li><strong>Google Workspace:</strong> Business email, Drive for document storage, Sheets for tracking</li>
+        <li><strong>HubSpot CRM (free tier):</strong> Pipeline tracking for bids and deals</li>
+        <li><strong>Password manager:</strong> For SAM.gov, DIBBS, and supplier logins</li>
+        <li><strong>Cloud backup:</strong> All business documents backed up automatically</li>
+      </ul>
+      <h3>Physical Setup</h3>
+      <p>A dedicated workspace — even a corner of a room — trains your brain to be in "business mode" when you're there. You'll need reliable internet, a printer/scanner for documents, and a labeling system for any physical product handling.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Use one Google Drive folder structure from day one: iCrestiQ → Compliance → Contracts → Bids → Suppliers. This makes finding documents instant when you need them under deadline pressure.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up Google Workspace or business email</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Create your Google Drive folder structure</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up HubSpot free CRM account</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Install a password manager</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Designate and organize your physical workspace</span></div>
+    </div>
+    <div class="phase-complete">
+      <div class="pc-label">Phase 1 Complete</div>
+      <div class="pc-title">Your foundation is built. On to SAM.gov.</div>
+      <div class="pc-desc">You now have the legal and operational foundation every government contractor needs. Next: registering on the System for Award Management — the gateway to every federal opportunity.</div>
+      <button class="pc-btn" onclick="showLesson('2-1')"><i class="ti ti-arrow-right"></i> Continue to Phase 2</button>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 7 of 23 — Phase 1 complete</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-6')"><i class="ti ti-arrow-left"></i> Previous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PHASE 2 LESSONS ════ -->
+
+  <div class="lesson" id="lesson-2-1">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-2">Phase 2 — SAM.gov Registration</div>
+      <div class="lh-title">Lesson 2.1 — What is SAM.gov?</div>
+      <div class="lh-sub">"If you're not in SAM, you can't get paid."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/CL1hQ/DAHNtWCL1hQ/-1/0/0001-78194767735421022.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T091707Z&X-Amz-Expires=68874&X-Amz-Signature=0857a9b10c3e0359a825b90a1a81886b73fb8eb9a01f7aed209c51c9671af349&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A25%3A01%20GMT" alt="Lesson 2.1 — What is SAM.gov" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>SAM.gov — the System for Award Management — is the federal government's central database of vendors. Every contractor that receives federal payments must be registered and active in SAM.gov. It is the single most important registration in government contracting.</p>
+      <h3>What SAM.gov Does</h3>
+      <ul>
+        <li>Verifies your business identity for federal procurement</li>
+        <li>Links your banking information for direct payment</li>
+        <li>Stores your NAICS codes, PSC codes, and small business certifications</li>
+        <li>Publishes your capability statement to contracting officers</li>
+        <li>Enables you to receive award notifications</li>
+      </ul>
+      <h3>The Annual Renewal Rule</h3>
+      <p>SAM.gov registrations expire every 365 days. There is no automatic renewal and no government reminder. If your registration lapses, you are ineligible to receive award — even if you're the lowest bidder. This is one of the most common and most preventable failure points for small contractors.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Set a calendar reminder for 60 days before your SAM.gov expiration date. Better yet, use the GovCon Compliance Command Center™ — it tracks your expiration automatically with Red/Orange/Yellow/Green alerts.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Create a Login.gov account (required for SAM.gov access)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Familiarize yourself with SAM.gov navigation</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Note today's date — your 365-day clock will start on registration day</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 8 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('1-7')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('2-2')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-2-2">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-2">Phase 2 — SAM.gov Registration</div>
+      <div class="lh-title">Lesson 2.2 — Getting Your UEI Number</div>
+      <div class="lh-sub">"Your UEI is your permanent federal identity number."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/VDXes/DAHNtRVDXes/-1/0/0001-91705569413033701.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T135529Z&X-Amz-Expires=52076&X-Amz-Signature=8166def1c6c29086fe10ef79f3bfd19c559a5de0aaadd175648b32db7efccc93&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A23%3A25%20GMT" alt="Lesson 2.2 — UEI Number" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The Unique Entity Identifier (UEI) replaced the DUNS number in April 2022 as the standard identifier for all federal vendors. Your UEI is a 12-character alphanumeric code assigned by SAM.gov during registration — it identifies your business entity in every federal system.</p>
+      <h3>How to Get Your UEI</h3>
+      <p>Your UEI is assigned automatically when you create an entity registration on SAM.gov. You do not need to apply for it separately. The process takes about 10 business days for a new registration to be fully active in all federal systems.</p>
+      <ul>
+        <li>Go to SAM.gov and sign in with your Login.gov account</li>
+        <li>Select "Register Entity" under Entity Management</li>
+        <li>Your UEI is assigned at the start of the registration process</li>
+        <li>Record your UEI — you'll use it on every federal form</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Your UEI appears at the top of your SAM.gov entity record. Save it alongside your EIN and CAGE code in a master credentials document. Losing track of it costs you time on every bid submission.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Begin SAM.gov entity registration</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Record your UEI number when assigned</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Save UEI in your master credentials document</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 9 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('2-1')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('2-3')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-2-3">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-2">Phase 2 — SAM.gov Registration</div>
+      <div class="lh-title">Lesson 2.3 — CAGE Code Explained</div>
+      <div class="lh-sub">"Your CAGE code is your permanent ID in the DLA and DoD systems."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/H7abs/DAHNtYH7abs/-1/0/0001-5206668847118176111.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T185035Z&X-Amz-Expires=34795&X-Amz-Signature=1333c60b1d2a3ad1374dc75b0b885291fc9b5ac844f281d6783d7e4790b98a68&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A30%3A30%20GMT" alt="Lesson 2.3 — CAGE Code" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The Commercial and Government Entity (CAGE) code is a 5-character identifier assigned by the Defense Logistics Agency (DLA). It's used across all DoD procurement systems, including DIBBS, to identify your company as an approved vendor.</p>
+      <h3>How You Get a CAGE Code</h3>
+      <p>When you complete your SAM.gov registration, a CAGE code is automatically assigned to your entity by the DLA. You don't apply for it separately. However, it may take a few extra days to appear in the DLA's system after your SAM.gov registration goes active.</p>
+      <h3>Verifying Your CAGE Code</h3>
+      <p>You can look up any CAGE code at the DLA's CAGE search tool. Use this to verify your own code is active, and also to research suppliers and subcontractors before working with them.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> CAGE codes don't expire but should be verified annually for accuracy. A stale address or wrong POC in the DLA system can cause confusion during contract award. Check it every time you renew SAM.gov.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Complete SAM.gov registration (CAGE assigned automatically)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Verify CAGE code at DLA CAGE lookup tool</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Record CAGE code in your master credentials document</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 10 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('2-2')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('2-4')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-2-4">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-2">Phase 2 — SAM.gov Registration</div>
+      <div class="lh-title">Lesson 2.4 — Completing Your SAM.gov Profile</div>
+      <div class="lh-sub">"Your profile is your storefront — make it accurate and complete."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/s2JFQ/DAHNtks2JFQ/-1/0/0001-3042689224184802538.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T194108Z&X-Amz-Expires=30464&X-Amz-Signature=abf3086d9f8a2d12e2587d16e5d7d2182c99736279f6459d7f35593653ff9770&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A08%3A52%20GMT" alt="Lesson 2.4 — SAM.gov Profile" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>A complete SAM.gov profile does more than meet the minimum requirements — it tells contracting officers what you sell, whether you qualify as a small business, and how to reach you. Every field matters.</p>
+      <h3>Key Sections to Complete Carefully</h3>
+      <ul>
+        <li><strong>NAICS Codes:</strong> Select every code that applies to your products or services. Your primary NAICS determines your small business size standard.</li>
+        <li><strong>PSC/FSC Codes:</strong> Product and Service Codes tell DLA what categories you sell in. Accurate codes mean your profile appears in the right searches.</li>
+        <li><strong>Points of Contact:</strong> Keep your Government Business POC and Electronic Business POC current — these receive bid notifications.</li>
+        <li><strong>Banking Information:</strong> Routing and account number must match your business bank account exactly.</li>
+        <li><strong>Representations & Certifications:</strong> Complete all reps & certs annually — these certify your business size, socioeconomic status, and compliance with federal regulations.</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Add more NAICS codes than you think you need. You can always narrow focus later, but missing a code means missing solicitations in that category. Review annually and update as your business evolves.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Select all applicable NAICS codes</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Add PSC/FSC codes matching your product categories</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Verify POC information is current</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Enter banking information (double-check routing + account)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Complete all Representations & Certifications</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Submit registration and note your expiration date</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 11 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('2-3')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('2-5')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-2-5">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-2">Phase 2 — SAM.gov Registration</div>
+      <div class="lh-title">Lesson 2.5 — SAM.gov Maintenance & Compliance</div>
+      <div class="lh-sub">"Expires every 365 days. No government reminder."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/ZoPE8/DAHNtqZoPE8/-1/0/0001-2237670791060814832.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T190554Z&X-Amz-Expires=33591&X-Amz-Signature=d04ac147a1b9164f0154a1ad57c19e51585557918c859fc367d7a65c76b4a476&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A25%3A45%20GMT" alt="Lesson 2.5 — SAM.gov Maintenance" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>SAM.gov is not a one-time task — it's an ongoing commitment. Every year, you must renew your registration, verify your information is current, and re-complete your Representations & Certifications. Missing renewal by even one day can cost you an active award.</p>
+      <h3>Annual Renewal Checklist</h3>
+      <ul>
+        <li>Renew 30–60 days before expiration (not on the last day)</li>
+        <li>Verify business name, address, and POC contacts are current</li>
+        <li>Confirm banking information still matches your bank account</li>
+        <li>Update NAICS and PSC codes if your business has expanded</li>
+        <li>Re-complete Representations & Certifications</li>
+        <li>Verify no exclusions have been added to your record</li>
+      </ul>
+      <h3>Ongoing Monitoring</h3>
+      <p>Beyond annual renewal, monitor your SAM.gov record quarterly. If your address changes, a new officer is added, or your business structure changes, update SAM.gov within 30 days. Stale information creates risk during contract performance reviews.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> The GovCon Compliance Command Center™ tracks your SAM.gov expiration date alongside 29 other compliance deadlines — with auto-calculated days remaining and a live Red/Orange/Yellow/Green dashboard. Available in GovCon Lab.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Record your SAM.gov expiration date</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set 60-day and 30-day renewal reminders</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Schedule quarterly SAM.gov record review</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Add SAM.gov renewal to your compliance tracker</span></div>
+    </div>
+    <div class="phase-complete">
+      <div class="pc-label">Phase 2 Complete</div>
+      <div class="pc-title">You're registered. Now let's find your niche.</div>
+      <div class="pc-desc">You're now a registered federal vendor. Phase 3 is about choosing the right product categories — the decisions that determine which bids you win and how competitive you can be.</div>
+      <button class="pc-btn" onclick="showLesson('3-1')"><i class="ti ti-arrow-right"></i> Continue to Phase 3</button>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 12 of 23 — Phase 2 complete</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('2-4')"><i class="ti ti-arrow-left"></i> Previous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PHASE 3 LESSONS ════ -->
+
+  <div class="lesson" id="lesson-3-1">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-3">Phase 3 — Choosing Your Niche</div>
+      <div class="lh-title">Lesson 3.1 — Choosing Your Niche</div>
+      <div class="lh-sub">"The riches are in the niches."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/Dprxk/DAHNulDprxk/-1/0/0001-6628680427573744797.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T084759Z&X-Amz-Expires=71176&X-Amz-Signature=15f6851f89c78bb0847c42190e7407d1f928ece674fd58dd2cc85e7f4f7bde22&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A34%3A15%20GMT" alt="Lesson 3.1 — Choosing Your Niche" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>New GovCon contractors often make the mistake of trying to bid on everything. The contractors who build consistent win rates do the opposite — they pick 2–3 product categories, learn them deeply, build supplier relationships in those categories, and become the go-to vendor in that niche.</p>
+      <h3>How to Choose Your Niche</h3>
+      <ul>
+        <li><strong>DIBBS Volume:</strong> Look at how frequently your target FSC codes appear on DIBBS. High volume categories give you more opportunities to build win rate.</li>
+        <li><strong>Sourcing Access:</strong> Choose categories where you can reliably source product from multiple suppliers. Single-source categories are high risk.</li>
+        <li><strong>Margin Potential:</strong> Some categories have thin margins due to heavy competition. Research award prices before committing to a niche.</li>
+        <li><strong>Capability Fit:</strong> If MIL-SPEC packaging is required, make sure you have or can access that capability.</li>
+      </ul>
+      <h3>iCrestiQ Active Categories</h3>
+      <p>iCrestiQ focuses on hardware and fasteners (FSC 5305, 5306, 5310), safety and PPE (FSC 4240, 8415), janitorial supplies (FSC 7930), and hand tools (FSC 5120). These categories offer consistent DIBBS volume, reliable supplier networks, and margin potential above 18%.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Start with one FSC category. Win 10 bids in that category. Then expand. Trying to cover 10 categories from day one spreads your sourcing and pricing attention too thin.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research 3–5 FSC categories on DIBBS for volume</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Identify at least 2 suppliers in your target categories</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Check recent DIBBS award prices in your target FSC</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Select your primary FSC category to start</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 13 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('2-5')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('3-2')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-3-2">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-3">Phase 3 — Choosing Your Niche</div>
+      <div class="lh-title">Lesson 3.2 — Understanding NSN & FSC Codes</div>
+      <div class="lh-sub">"The language of the federal supply system."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/kJI9o/DAHNuskJI9o/-1/0/0001-601738227978229218.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T102921Z&X-Amz-Expires=63635&X-Amz-Signature=beaeb56a40dcb42f853b2eecb779cb1336ea03621a8f5c384b07e1d06cc08326&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A09%3A56%20GMT" alt="Lesson 3.2 — NSN and FSC Codes" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The National Stock Number (NSN) is the universal identifier for every item in the federal supply system. Understanding how NSNs work — and how they relate to FSC and PSC codes — is fundamental to navigating DIBBS and the DLA.</p>
+      <h3>NSN Structure</h3>
+      <p>Every NSN is a 13-digit code in the format XXXX-XX-XXX-XXXX:</p>
+      <ul>
+        <li><strong>Digits 1–4:</strong> Federal Supply Class (FSC) — identifies the product category</li>
+        <li><strong>Digits 5–6:</strong> Country code (01 = US-assigned)</li>
+        <li><strong>Digits 7–13:</strong> NIIN — the item-specific unique identifier</li>
+      </ul>
+      <h3>FSC vs PSC</h3>
+      <ul>
+        <li><strong>FSC (Federal Supply Class):</strong> Used for products and goods. The first 2 digits identify the group (53 = hardware, 84 = clothing, 79 = cleaning).</li>
+        <li><strong>PSC (Product and Service Code):</strong> Used for services. If you're selling products, FSC is your primary code system.</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> The GovCon NSN/FSC/PSC Lookup & Bid Screener™ decodes any NSN instantly — paste it in and get the FSC, NIIN, DIBBS search URL, and MIL-SPEC risk flag automatically.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Practice decoding 3 NSNs from a recent DIBBS listing</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Identify the FSC groups for your target categories</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Search DIBBS for your primary FSC code</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 14 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('3-1')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('3-3')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-3-3">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-3">Phase 3 — Choosing Your Niche</div>
+      <div class="lh-title">Lesson 3.3 — Set-Aside Certifications</div>
+      <div class="lh-sub">"Certifications that unlock exclusive contracts."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/cFaNo/DAHNumcFaNo/-1/0/0001-5856313089242304225.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T132108Z&X-Amz-Expires=51941&X-Amz-Signature=e3f20fdcf61144ac20b04a6eb1f41ae90d17d82f21e47d2a491e9a15864104de&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2003%3A46%3A49%20GMT" alt="Lesson 3.3 — Set-Aside Certifications" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The federal government sets aside a portion of contracts specifically for small businesses and businesses owned by people in underrepresented groups. Getting certified opens a pool of competition that is dramatically smaller than the open market.</p>
+      <h3>Major Set-Aside Certifications</h3>
+      <ul>
+        <li><strong>Small Business (SB):</strong> Automatic if you meet SBA size standards for your NAICS. No application required.</li>
+        <li><strong>8(a) Business Development:</strong> For socially and economically disadvantaged business owners. 9-year program with mentoring and sole-source contract access.</li>
+        <li><strong>WOSB / EDWOSB:</strong> Women-Owned Small Business. Self-certified or third-party certified through SBA.</li>
+        <li><strong>SDVOSB:</strong> Service-Disabled Veteran-Owned Small Business. Verified through VA's VetBiz registry.</li>
+        <li><strong>HUBZone:</strong> Historically Underutilized Business Zone. Based on business location and employee residency requirements.</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Check your eligibility for multiple certifications — you can hold more than one. Each certification adds another pool of set-aside contracts where you face less competition. Apply for any you qualify for as early as possible.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Verify your Small Business status on SAM.gov</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research 8(a), WOSB, SDVOSB, HUBZone eligibility</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Apply for any certifications you qualify for</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Add certification renewal dates to your compliance tracker</span></div>
+    </div>
+    <div class="phase-complete">
+      <div class="pc-label">Phase 3 Complete</div>
+      <div class="pc-title">Niche selected. Time to find opportunities and bid.</div>
+      <div class="pc-desc">You know your categories, you can decode NSNs, and you understand your competitive advantages. Phase 4 is where it gets real — finding RFQs, scoring them, sourcing product, and submitting winning quotes.</div>
+      <button class="pc-btn" onclick="showLesson('4-1')"><i class="ti ti-arrow-right"></i> Continue to Phase 4</button>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 15 of 23 — Phase 3 complete</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('3-2')"><i class="ti ti-arrow-left"></i> Previous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PHASE 4 LESSONS ════ -->
+
+  <div class="lesson" id="lesson-4-1">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-4">Phase 4 — Bid and Win</div>
+      <div class="lh-title">Lesson 4.1 — Finding RFQs</div>
+      <div class="lh-sub">"The government posts thousands of opportunities every day."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/GHFg4/DAHNuoGHFg4/-1/0/0001-6754781216409826393.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T232216Z&X-Amz-Expires=17710&X-Amz-Signature=b751f497a3918d0bff8926b86a702906dac23b96f04f6dba1e60c0dac88d5834&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A17%3A26%20GMT" alt="Lesson 4.1 — Finding RFQs" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Once you're registered in SAM.gov and know your target FSC categories, the next step is finding active solicitations to bid on. Government opportunities come from multiple platforms — each with different characteristics, competition levels, and product categories.</p>
+      <h3>Your Primary Platforms</h3>
+      <div class="platform-grid">
+        <div class="platform-card">
+          <div class="pc-name">DIBBS (DLA)</div>
+          <div class="pc-desc">Defense Logistics Agency's Internet Bid Board. The highest-volume platform for product suppliers. Thousands of RFQs daily across hardware, safety, MRO, and more.</div>
+          <div class="pc-tags"><span class="pc-tag">Products</span><span class="pc-tag">High Volume</span><span class="pc-tag">Daily</span></div>
+        </div>
+        <div class="platform-card">
+          <div class="pc-name">SAM.gov</div>
+          <div class="pc-desc">The federal government's primary opportunity posting system. Covers all agencies, all contract types. Broader competition but also broader opportunity.</div>
+          <div class="pc-tags"><span class="pc-tag">All Agencies</span><span class="pc-tag">All Types</span></div>
+        </div>
+        <div class="platform-card">
+          <div class="pc-name">BidNet</div>
+          <div class="pc-desc">State and local government opportunities. Often less competition than federal platforms and frequently overlooked by new contractors.</div>
+          <div class="pc-tags"><span class="pc-tag">State/Local</span><span class="pc-tag">Less Competition</span></div>
+        </div>
+        <div class="platform-card">
+          <div class="pc-name">GovSpend</div>
+          <div class="pc-desc">Market intelligence platform showing historical award data. Use it to research what the government bought, from whom, and at what price.</div>
+          <div class="pc-tags"><span class="pc-tag">Intel</span><span class="pc-tag">Pricing Data</span></div>
+        </div>
+      </div>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Start with DIBBS — it's the highest volume and most straightforward for product suppliers. Set up daily email alerts for your target FSC codes so new RFQs hit your inbox before the window closes.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Create a DIBBS account at dibbs.bsm.dla.mil</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up FSC code alerts on DIBBS</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Register on SAM.gov for opportunity notifications</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Explore BidNet for state/local opportunities in your area</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Run a GovSpend search for your target FSC to see award history</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 16 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('3-3')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('4-2')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-4-2">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-4">Phase 4 — Bid and Win</div>
+      <div class="lh-title">Lesson 4.2 — Bid / No-Bid Analysis</div>
+      <div class="lh-sub">"Not every opportunity is worth your time."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/GqS0U/DAHNugGqS0U/-1/0/0001-9209243015584555766.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T064725Z&X-Amz-Expires=77952&X-Amz-Signature=a0687abb351b9635368a0a79021b440d0307129a25e9e77c230f87c35ed13842&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A26%3A37%20GMT" alt="Lesson 4.2 — Bid No-Bid Analysis" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The discipline that separates high-win-rate contractors from everyone else isn't pricing — it's selectivity. Before you spend any time sourcing product or building a quote, run every RFQ through a quick bid / no-bid screen.</p>
+      <h3>The 5 Criteria to Score</h3>
+      <ul>
+        <li><strong>Sourcing Capability:</strong> Can you reliably source this item from a vetted supplier?</li>
+        <li><strong>Margin Potential:</strong> Based on DIBBS award history, can you hit your minimum margin (18%+)?</li>
+        <li><strong>Delivery Window:</strong> Does the required delivery date fit within your supplier's lead time?</li>
+        <li><strong>MIL-SPEC Risk:</strong> Are the packaging and marking requirements manageable?</li>
+        <li><strong>Category Fit:</strong> Is this an FSC you know and have supplier relationships in?</li>
+      </ul>
+      <h3>The Decision</h3>
+      <div class="verdict-row">
+        <div class="verdict v-go">✅ GO — Score 75%+<br>Proceed to pricing</div>
+        <div class="verdict v-cau">⚠️ CAUTION — 55–74%<br>Identify risks first</div>
+        <div class="verdict v-no">❌ NO-GO — Below 55%<br>Log and move on</div>
+      </div>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Log every NO-GO decision in your Pipeline Tracker. Over time, the pattern of what you reject reveals which categories to stop pursuing — and which to double down on.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Define your 5 bid screening criteria</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set your minimum margin threshold (recommend 18%)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Score your next 3 DIBBS RFQs using the criteria</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Log results in your Pipeline Tracker</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 17 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('4-1')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('4-3')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-4-3">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-4">Phase 4 — Bid and Win</div>
+      <div class="lh-title">Lesson 4.3 — Supplier Sourcing & Vetting</div>
+      <div class="lh-sub">"Your supplier is your reputation on every order."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/jsRWo/DAHNuqjsRWo/-1/0/0001-9044861628246329140.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T105120Z&X-Amz-Expires=62497&X-Amz-Signature=b7ead1ace6df90c9877141d42003a05c96bfe37cfa0a0e8385e7505c086a3564&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A12%3A57%20GMT" alt="Lesson 4.3 — Supplier Sourcing and Vetting" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>On a government contract, you are responsible for what your supplier delivers. A wrong part, a late shipment, or a supplier on the SAM.gov exclusions list can result in contract termination and damage your past performance record — which follows you on every future bid.</p>
+      <h3>Before You Use Any Supplier</h3>
+      <ul>
+        <li>Verify they are NOT on the SAM.gov exclusions list</li>
+        <li>Confirm their UEI and CAGE code are active in the DLA system</li>
+        <li>Request pricing on your target NSNs and compare to DIBBS award history</li>
+        <li>Confirm their lead time fits inside your contract delivery window</li>
+        <li>Confirm they can provide MIL-SPEC compliant packaging if required</li>
+      </ul>
+      <h3>Building a Supplier Network</h3>
+      <p>Over time, build a roster of 2–3 approved suppliers per FSC category. Competition between suppliers keeps your pricing sharp. If your primary supplier is out of stock, a secondary source saves the contract.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Run every new supplier through the GovCon Supplier Vetting Kit™ before using them on a live bid. One unvetted supplier on one contract can end your government contracting career. The vetting kit takes 20 minutes and protects you permanently.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Search SAM.gov exclusions for each new supplier</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Verify supplier UEI and CAGE are active</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Request pricing on 3 test NSNs from each supplier</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Confirm lead time and MIL-SPEC packaging capability</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Add approved suppliers to your Supplier Registry</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 18 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('4-2')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('4-4')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-4-4">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-4">Phase 4 — Bid and Win</div>
+      <div class="lh-title">Lesson 4.4 — Submitting Quotes</div>
+      <div class="lh-sub">"Speed and accuracy win government contracts."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/u0buY/DAHNuqu0buY/-1/0/0001-1452918554812483655.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T234451Z&X-Amz-Expires=17128&X-Amz-Signature=29a73dc72a608843d2b6cfd71ed9649899dbf106361cad57bb2e884273bc79ab&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A30%3A19%20GMT" alt="Lesson 4.4 — Submitting Quotes" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Submitting a quote on DIBBS is straightforward — but the details matter. A quote submitted late, with the wrong unit price format, or missing a required field is automatically disqualified. Build a repeatable process and follow it every time.</p>
+      <h3>The DIBBS Quote Submission Process</h3>
+      <ul>
+        <li>Log in to DIBBS and find your target RFQ by NSN or solicitation number</li>
+        <li>Review the full solicitation — check quantity, delivery date, packaging requirements, and any special instructions</li>
+        <li>Enter your unit price — this is your all-in price per unit including packaging and shipping to destination</li>
+        <li>Confirm your delivery date is achievable based on your supplier's lead time</li>
+        <li>Submit before the closing date and time (Eastern Time)</li>
+      </ul>
+      <h3>Pricing Your Quote</h3>
+      <p>Use the DIBBS purchase history to see what the last 5 awards went for on this NSN. Price at or slightly below the average. Your pricing should cover: supplier unit cost + freight + packaging + your margin target. The Pricing Intelligence Calculator in the GovCon Bid Intelligence Suite™ handles all of this automatically.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Never submit in the last 5 minutes. DIBBS can be slow under high traffic. Submit your quote at least 30 minutes before closing to avoid a technical timeout disqualifying your bid.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Review full solicitation requirements before pricing</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Calculate landed cost (supplier + freight + packaging)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Check DIBBS award history for this NSN</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Submit quote at least 30 minutes before closing</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Log bid in your Pipeline Tracker with all details</span></div>
+    </div>
+    <div class="phase-complete">
+      <div class="pc-label">Phase 4 Complete</div>
+      <div class="pc-title">You've submitted your first bids. Now let's build the system.</div>
+      <div class="pc-desc">You know how to find opportunities, score them, source product, and submit quotes. Phase 5 turns this process into an automated system that runs without you having to manage every step manually.</div>
+      <button class="pc-btn" onclick="showLesson('5-1')"><i class="ti ti-arrow-right"></i> Continue to Phase 5</button>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 19 of 23 — Phase 4 complete</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('4-3')"><i class="ti ti-arrow-left"></i> Previous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PHASE 5 LESSONS ════ -->
+
+  <div class="lesson" id="lesson-5-1">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-5">Phase 5 — Systems, Automation & Scale</div>
+      <div class="lh-title">Lesson 5.1 — HubSpot RFQ Pipeline</div>
+      <div class="lh-sub">"Your pipeline is your business at a glance."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/82d3E/DAHNup82d3E/-1/0/0001-4403902213042049236.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260627%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260627T012921Z&X-Amz-Expires=8290&X-Amz-Signature=efe4fbacce97cf9c118f6047eb458bb5bf37f498729affa43ffc2a49d0ba2f9d&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2003%3A47%3A31%20GMT" alt="Lesson 5.1 — HubSpot RFQ Pipeline" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>As your bid volume grows, you need a system to track every RFQ from discovery through award — not a spreadsheet you update manually, but a live pipeline that shows you exactly where every opportunity stands at any moment.</p>
+      <h3>The iCrestiQ RFQ Pipeline Stages</h3>
+      <ul>
+        <li><strong>Incoming:</strong> New RFQ received, not yet scored</li>
+        <li><strong>Under Review:</strong> Being scored on bid/no-bid criteria</li>
+        <li><strong>Active Bid:</strong> Scored GO, pricing in progress or submitted</li>
+        <li><strong>Caution:</strong> Flagged for additional review</li>
+        <li><strong>Won / Lost / Rejected:</strong> Final disposition logged</li>
+      </ul>
+      <h3>Why HubSpot</h3>
+      <p>HubSpot's free CRM tier gives you a fully functional deal pipeline, email integration, and the ability to add custom properties to each deal (NSN, FSC, bid amount, award amount). It integrates directly with Make.com for automation — which is what Phase 5 is all about.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Log every RFQ — including NO-GO decisions — in HubSpot. The Rejected stage is where you build intelligence over time. After 90 days, look at what you rejected most. That's your category focus signal.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Create a HubSpot free account</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up your RFQ pipeline with the stages above</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Add custom properties: NSN, FSC, Bid Price, Award Price</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Log your first 5 RFQs into the pipeline</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 20 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('4-4')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('5-2')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-5-2">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-5">Phase 5 — Systems, Automation & Scale</div>
+      <div class="lh-title">Lesson 5.2 — Automating with Make.com</div>
+      <div class="lh-sub">"Build it once. Let it run."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/IFSzA/DAHNumIFSzA/-1/0/0001-2237670791081910322.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T054647Z&X-Amz-Expires=82186&X-Amz-Signature=0801f386d847d82999b8fd7f5c31128ff690584f56f6b52bf66198b3bad407db&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A36%3A33%20GMT" alt="Lesson 5.2 — Automating with Make.com" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>The iCrestiQ RFQ Command Center is a Make.com automation pipeline that processes government RFQ documents end-to-end — from the moment they arrive in your inbox or Google Drive to HubSpot deal creation, Claude AI scoring, and GO/CAUTION/NO-GO email routing. All without manual intervention.</p>
+      <h3>The Core Automation Flow</h3>
+      <ul>
+        <li><strong>Trigger:</strong> RFQ document dropped in Google Drive or received via email</li>
+        <li><strong>Extract:</strong> PDF.co converts the document to text</li>
+        <li><strong>Score:</strong> Claude API scores the RFQ on 100-point criteria (NSN fit, margin potential, delivery risk)</li>
+        <li><strong>Route:</strong> GO bids → Active Bid stage in HubSpot + email alert. NO-GO bids → Rejected stage + logged for patterns.</li>
+        <li><strong>Notify:</strong> Gmail sends you a summary of each scored RFQ</li>
+      </ul>
+      <h3>Getting Started with Make.com</h3>
+      <p>Make.com has a free tier that handles light automation volume. The full RFQ Command Center blueprint is available inside GovCon Lab — it's an importable scenario that connects to your Google Drive, Claude API, HubSpot, and Gmail with minimal configuration.</p>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Start with a simple Make.com scenario: Watch Google Drive folder → Create HubSpot deal. Get comfortable with the platform before building the full AI-scoring pipeline. One working module is better than a broken complex system.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Create a Make.com free account</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Connect Google Drive and HubSpot to Make.com</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Build a basic Watch Folder → Create Deal scenario</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Test with 3 sample RFQ documents</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 21 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('5-1')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('5-3')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-5-3">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-5">Phase 5 — Systems, Automation & Scale</div>
+      <div class="lh-title">Lesson 5.3 — Tracking Performance</div>
+      <div class="lh-sub">"What gets measured gets improved."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/GKI00/DAHNusGKI00/-1/0/0001-6754781218797831220.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T034927Z&X-Amz-Expires=89040&X-Amz-Signature=1eb1232f24b21bd713bc792be4da14b48d17103cefa122d1040bb2ecdb23adfb&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A33%3A27%20GMT" alt="Lesson 5.3 — Tracking Performance" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Government contracting is a data business. The contractors who grow sustainably aren't the ones who bid the most — they're the ones who measure the right things and use that data to get sharper over time.</p>
+      <h3>The Metrics That Matter</h3>
+      <ul>
+        <li><strong>Win Rate by FSC:</strong> Which categories are you winning in? Double down there.</li>
+        <li><strong>Average Margin on Wins:</strong> Are you hitting your target? If margins are slipping, your supplier pricing or competition has changed.</li>
+        <li><strong>Price Delta (Loss Analysis):</strong> How far were you from the award price on losses? If you're consistently $0.05–$0.10 high, it's a sourcing problem, not a pricing problem.</li>
+        <li><strong>Bid Volume:</strong> How many RFQs are you scoring per week? Volume is a leading indicator of revenue.</li>
+        <li><strong>Days to Close:</strong> How long from RFQ to award? Faster close cycles mean faster cash flow.</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Review your HubSpot pipeline every Monday morning. 10 minutes. Check what moved, what's stale, what needs action. This weekly ritual is what keeps the pipeline flowing instead of stagnating.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set up Win Rate tracking in HubSpot or your Pipeline Tracker</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Log award prices on losses (from DIBBS award history)</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Set a weekly Monday morning pipeline review reminder</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Review your first 30-day metrics and identify patterns</span></div>
+    </div>
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 22 of 23</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('5-2')"><i class="ti ti-arrow-left"></i> Previous</button>
+        <button class="lf-btn primary" onclick="showLesson('5-4')">Next <i class="ti ti-arrow-right"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="lesson-5-4">
+    <div class="lesson-header">
+      <div class="lh-phase ph-text-5">Phase 5 — Systems, Automation & Scale</div>
+      <div class="lh-title">Lesson 5.4 — Growing Your Revenue</div>
+      <div class="lh-sub">"The government is always purchasing — scale with it."</div>
+    </div>
+    <div class="lesson-graphic">
+      <img src="https://export-download.canva.com/66Wz4/DAHNuu66Wz4/-1/0/0001-5206668843770151441.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260626%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260626T151117Z&X-Amz-Expires=47934&X-Amz-Signature=55df8a4a31616f8630755905a467087924bf249b578d2d6d7de6178d278d6842&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2027%20Jun%202026%2004%3A30%3A11%20GMT" alt="Lesson 5.4 — Growing Your Revenue" loading="lazy">
+    </div>
+    <div class="lesson-body">
+      <p>Once your systems are running and you have a consistent win rate in your primary category, growth comes from expanding — more categories, more platforms, more automation, and eventually larger contract vehicles.</p>
+      <h3>Growth Levers</h3>
+      <ul>
+        <li><strong>Expand FSC Categories:</strong> Take your winning process into one adjacent category at a time. Add supplier relationships, add NSNs to your screener, expand your NAICS codes on SAM.gov.</li>
+        <li><strong>Add Platforms:</strong> If you're winning on DIBBS, explore SAM.gov set-aside opportunities. If you have state certifications, pursue BidNet contracts.</li>
+        <li><strong>GSA Schedule:</strong> A GSA Schedule contract gives you a pre-approved vendor status across hundreds of agencies. It's a 6–12 month application process but dramatically expands your opportunity set.</li>
+        <li><strong>Subcontracting:</strong> As a certified small business, you can team with larger primes as a subcontractor — accessing contracts that are too large for you to bid as prime.</li>
+        <li><strong>Past Performance:</strong> Every contract you win becomes a reference. Protect your past performance record — it compounds in value with every successful delivery.</li>
+      </ul>
+      <div class="callout"><strong>iCrestiQ Tip:</strong> Don't add a new category until your current one is running consistently above a 50% win rate. Premature expansion dilutes your focus and slows the compounding of expertise in your core niche.</div>
+    </div>
+    <div class="checklist">
+      <div class="checklist-title">Lesson Checklist</div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Review win rate in primary category — hit 50% before expanding</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Identify one adjacent FSC category to explore next</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Research GSA Schedule eligibility for your categories</span></div>
+      <div class="check-item" onclick="toggleCheck(this)"><i class="ti ti-square"></i><span>Document every completed contract for past performance portfolio</span></div>
+    </div>
+
+    <div class="upsell-banner">
+      <div class="ub-icon">📚</div>
+      <div class="ub-body">
+        <div class="ub-label">What comes next</div>
+        <div class="ub-title">Go deeper with the full course library</div>
+        <div class="ub-desc">This course gives you the foundation. Each topic above has a dedicated deep-dive course — from a full SAM.gov mastery series to niche-specific playbooks, MIL-SPEC packaging compliance, and AI automation systems.</div>
+        <div class="ub-courses">
+          <span class="course-pill">SAM.gov Mastery</span>
+          <span class="course-pill green">Niche Playbooks</span>
+          <span class="course-pill amber">MIL-SPEC Packaging</span>
+          <span class="course-pill blue">RFQ Command Center</span>
+          <span class="course-pill pink">AI and Automation</span>
+          <span class="course-pill">Set-Aside Certifications</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-footer">
+      <span class="lf-label">Lesson 23 of 23 — Course complete 🎉</span>
+      <div class="lf-nav">
+        <button class="lf-btn" onclick="showLesson('5-3')"><i class="ti ti-arrow-left"></i> Previous</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Footer -->
+  <div class="cta-sec">
+    <h2>Our library of courses is built for people who are serious about building a real business — not chasing a trend.</h2>
+    <div class="cta-tagline">The government is always purchasing.</div>
+    <button class="cta-btn" onclick="sendPrompt('Show me the full GovCon course library on Whop')">Browse the full library ↗</button>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+  const TOTAL = 23;
+  const ORDER = [
+    '1-1','1-2','1-3','1-4','1-5','1-6','1-7',
+    '2-1','2-2','2-3','2-4','2-5',
+    '3-1','3-2','3-3',
+    '4-1','4-2','4-3','4-4',
+    '5-1','5-2','5-3','5-4'
+  ];
+
+  const done = new Set(JSON.parse(localStorage.getItem('gcm-done') || '[]'));
+  let current = '1-1';
+
+  function showLesson(id) {
+    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.lesson-link').forEach(l => l.classList.remove('active'));
+    const el = document.getElementById('lesson-' + id);
+    const nav = document.getElementById('nav-' + id);
+    if (el) { el.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    if (nav) nav.classList.add('active');
+    current = id;
+    if (!done.has(id)) {
+      done.add(id);
+      localStorage.setItem('gcm-done', JSON.stringify([...done]));
+      const chk = document.getElementById('chk-' + id);
+      if (chk) chk.parentElement.classList.add('done');
+    }
+    updateProgress();
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('done');
+  }
+
+  function updateProgress() {
+    const pct = Math.round((done.size / TOTAL) * 100);
+    document.getElementById('prog-pct').textContent = pct + '%';
+    document.getElementById('prog-fill').style.width = pct + '%';
+  }
+
+  // Restore done states
+  done.forEach(id => {
+    const chk = document.getElementById('chk-' + id);
+    if (chk) chk.parentElement.classList.add('done');
+  });
+  updateProgress();
+</script>
+
+</body>
+</html>
